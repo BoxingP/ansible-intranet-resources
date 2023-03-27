@@ -1,0 +1,11 @@
+---
+- name: build docker image
+  community.docker.docker_image:
+    name: '{{ project | replace(" ", "-") }}'
+    tag: '{{ deploy_environment }}'
+    build:
+      path: '{{ hostvars["localhost"]["code"]["remote_path"] }}'
+    source: build
+    state: present
+    force_source: yes
+    force_tag: yes

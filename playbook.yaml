@@ -2,3 +2,32 @@
 - name: get hosts facts
   hosts: all
   gather_facts: yes
+
+- name: do preparation
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/codes.yaml
+  tasks:
+    - name: load configuration
+      include_tasks: tasks/load_config.yaml
+
+- name: deploy application
+  hosts: zabbix
+  gather_facts: no
+  vars:
+    virtualenv: '{{ hostvars[inventory_hostname].ansible_env.HOME }}/.virtualenvs/ansible-intranet-resources-env'
+  vars_files:
+    - vars/codes.yaml
+  tasks:
+    - name: create python environment
+      include_role:
+        name: create_python_environment
+    - name: init workspace
+      include_tasks: tasks/init_workspace.yaml
+    - name: build docker image
+      include_tasks: tasks/build_docker_image.yaml
+      vars:
+        ansible_python_interpreter: '{{ virtualenv }}/bin/python3'
+    - name: set up app container
+      include_tasks: tasks/set_up_docker_container.yaml

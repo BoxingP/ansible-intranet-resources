@@ -1,0 +1,50 @@
+- name: get current python3 version
+  shell: /usr/bin/python3 --version | sed 's/^Python //'
+  register: python_version_current
+  changed_when: python_version_current.stdout != python_version_default
+  check_mode: no
+
+- name: install python3
+  import_tasks: install_python3.yaml
+  when: python_version_current.stdout != python_version_default
+
+- name: install python3 related packages
+  yum:
+    name:
+      - python-virtualenv
+      - libselinux-python3
+    state: present
+  become: yes
+
+- name: install python3 utilities
+  pip:
+    name:
+      - selinux
+    state: latest
+    executable: pip3
+  become: yes
+
+- name: upgrade pip and related
+  pip:
+    name:
+      - pip
+      - setuptools
+      - wheel
+    state: latest
+    virtualenv: '{{ virtualenv }}'
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: yes
+
+- name: upload python requirements file
+  copy:
+    src: 'requirements.txt'
+    dest: '{{ virtualenv }}/requirements.txt'
+    force: yes
+  become: yes
+
+- name: create python virtualenv
+  pip:
+    requirements: '{{ virtualenv }}/requirements.txt'
+    virtualenv: '{{ virtualenv }}'
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: yes

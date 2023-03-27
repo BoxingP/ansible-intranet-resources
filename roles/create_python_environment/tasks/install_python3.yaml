@@ -1,0 +1,54 @@
+- name: install required packages
+  yum:
+    name:
+      - gcc
+      - openssl-devel
+      - bzip2-devel
+      - libffi-devel
+    state: present
+  become: yes
+
+- name: 'download python {{ python_version_default }} source code'
+  get_url:
+    url: 'https://www.python.org/ftp/python/{{ python_version_default }}/Python-{{ python_version_default }}.tgz'
+    dest: '/tmp/Python-{{ python_version_default }}.tgz'
+    checksum: sha1:847face65d52e0e90e46c7b245e18cb46ce35e0e
+    mode: '0644'
+    timeout: 300
+  become: yes
+
+- name: 'extract python {{ python_version_default }} source code'
+  unarchive:
+    src: /tmp/Python-{{ python_version_default }}.tgz
+    dest: /tmp/
+    remote_src: yes
+  become: yes
+
+- name: run configure
+  command: ./configure --enable-optimizations
+  args:
+    chdir: '/tmp/Python-{{ python_version_default }}'
+  become: yes
+
+- name: run make install
+  make:
+    chdir: '/tmp/Python-{{ python_version_default }}'
+    target: install
+    file: '/tmp/Python-{{ python_version_default }}/Makefile'
+  become: yes
+
+- name: 'remove python {{ python_version_default }} source code archive'
+  file:
+    path: '/tmp/Python-{{ python_version_default }}.tgz'
+    state: absent
+  become: yes
+
+- name: create python3 symbolic link
+  file:
+    src: /usr/local/bin/python3
+    dest: /usr/bin/python3
+    owner: root
+    group: root
+    mode: '0777'
+    state: link
+  become: yes

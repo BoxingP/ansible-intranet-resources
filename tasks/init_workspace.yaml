@@ -1,0 +1,16 @@
+---
+- name: upload codes to remote
+  ansible.posix.synchronize:
+    src: '{{ hostvars["localhost"]["code"]["local_path"] }}'
+    dest: '{{ hostvars["localhost"]["code"]["remote_path"] }}'
+    mode: push
+    delete: yes
+    recursive: yes
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=.idea"
+      - "--exclude=__pycache__"
+  delegate_to: localhost
+  vars:
+    - ansible_user: '{{ synchronize_user | default(hostvars[inventory_hostname].ansible_user) }}'
+    - ansible_password: '{{ synchronize_password | default(hostvars[inventory_hostname].ansible_password) }}'

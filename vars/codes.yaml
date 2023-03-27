@@ -1,0 +1,5 @@
+---
+code:
+  - project: ccp test
+    local_path: '/home/boxing/github/selenium-auto-test-run-on-premise/'
+    remote_path: '/tmp/ccp-test/'

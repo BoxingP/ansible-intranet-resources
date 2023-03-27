@@ -1,0 +1,8 @@
+---
+- name: get the code index
+  set_fact:
+    code_index: "{{ lookup('ansible.utils.index_of', code, 'eq', project, 'name') }}"
+
+- name: extract config
+  set_fact:
+    code: "{{ code[ code_index | int ] }}"
