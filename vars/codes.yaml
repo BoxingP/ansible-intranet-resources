@@ -6,6 +6,9 @@ code:
   - project: tf cn test
     local_path: '/home/boxing/github/selenium-auto-test-run-on-premise/'
     remote_path: '/tmp/tf-cn-test/'
+  - project: chemicals test
+    local_path: '/home/boxing/github/selenium-auto-test-run-on-premise/'
+    remote_path: '/tmp/chemicals-test/'
   - project: ssl expiry check
     local_path: '/home/boxing/github/ssl-expiration-date-check/'
     remote_path: '/tmp/ssl-expiry-check/'
