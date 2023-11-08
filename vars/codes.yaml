@@ -12,3 +12,6 @@ code:
   - project: ssl expiry check
     local_path: '/home/boxing/github/ssl-expiration-date-check/'
     remote_path: '/tmp/ssl-expiry-check/'
+  - project: reports data import
+    local_path: '/home/boxing/github/reports-data-import/'
+    remote_path: '/tmp/reports-data-import/'
